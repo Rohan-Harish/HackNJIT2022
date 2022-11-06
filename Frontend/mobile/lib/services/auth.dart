@@ -1,31 +1,33 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mobile/globals.dart' as global;
+import 'network.dart';
+import 'package:http/http.dart' as http;
 
-class Authentication extends ChangeNotifier{
+class Authentication extends ChangeNotifier {
   String endpoint = ''; //Connect to python backend
   bool _isLoggedIn = false;
+  Networking net = Networking("http://google.com", "8080");
 
-  void authenticate(String email, String password) async{
-    await Future.delayed(Duration(minutes: 0, seconds: 2), (){
-      print("returned after");
-    });
-      _isLoggedIn = true;
-      notifyListeners();
+  void authenticate(String email, String password) async {
+    //http.Response response =
+    //await net.sendPost('login', {"email": email, "password": password});
+    //print(response);
+    _isLoggedIn = true;
+    notifyListeners();
   }
 
-  Future<bool> createAccount(String email, String password, String fullName) async{
-
+  Future<bool> createAccount(
+      String email, String password, String fullName) async {
     return false;
   }
 
-  bool getStatus(){
+  bool getStatus() {
     return _isLoggedIn;
   }
 
-  void signOut(){
+  void signOut() {
     print("setting false");
     _isLoggedIn = false;
     notifyListeners();
   }
-
 }
