@@ -17,7 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Widget> codes = <Widget>[];
-  Networking net = Networking("ip", "port");
+  Networking net = Networking("http://10.208.192.22", "5000");
   int caseNumber = 0;
   @override
   Widget build(BuildContext context) {
@@ -123,10 +123,12 @@ class _HomePageState extends State<HomePage> {
     print("scanning barcode");
     int ean = int.parse(await FlutterBarcodeScanner.scanBarcode(
         'green', "Cancel Scan", false, ScanMode.BARCODE));
+    print(ean);
     http.Response result = await net.sendPost("eanlookup", {"ean": ean});
     Item temp =
         Item(json.decode(result.body).name, json.decode(result.body).rating);
     codes.add(temp);
+    print(json.decode(result.body).name);
     setState(() {});
   }
 }
