@@ -16,8 +16,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Widget> codes = <Widget>[];
-  Networking net = Networking("http://10.208.192.22", "5000");
+  List<Item> codes = <Item>[];
+  Networking net = Networking("https://ebb2-128-235-250-65.ngrok.io", "5000");
   int caseNumber = 0;
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,17 @@ class _HomePageState extends State<HomePage> {
                     child: ListView.builder(
                       itemCount: codes.length,
                       itemBuilder: (context, int index) {
-                        return (codes[index]);
+                        return (ListTile(
+                          title: Text(codes[index].name),
+                          subtitle: Text(codes[index].rating.toString()),
+                          trailing: IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () {
+                              codes.removeAt(index);
+                              setState(() {});
+                            },
+                          ),
+                        ));
                       },
                     ),
                   ),
@@ -48,7 +58,8 @@ class _HomePageState extends State<HomePage> {
                                 SnackBar(content: const Text("Emptied Cart"));
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackBar);
-                            codes = <Widget>[];
+                            codes = <Item>[];
+                            setState(() {});
                           },
                           child: Text("Empty Cart")),
                       ElevatedButton(onPressed: () {}, child: Text("Checkout"))
@@ -69,19 +80,33 @@ class _HomePageState extends State<HomePage> {
                 },
               ));
             default: //Home
+              double ratingSum = 0;
+              double ratingAverage = 0;
+              if (codes.length > 0) {
+                codes.forEach((e) {
+                  ratingSum += e.rating;
+                });
+                ratingAverage = (ratingSum / codes.length);
+              }
+
+              int red = ((ratingAverage / 10) * 255).toInt();
+              int green = (255 - (ratingAverage / 10) * 255).toInt();
+
               return Center(
                 child: (SizedBox(
                   width: 150,
                   height: 150,
                   child: Container(
-                    decoration: BoxDecoration(color: Colors.red),
+                    decoration:
+                        BoxDecoration(color: Color.fromRGBO(red, green, 0, 1)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text(
                           "Score",
                           style: TextStyle(fontSize: 20),
-                        )
+                        ),
+                        Text(ratingAverage.toString())
                       ],
                     ),
                   ),
@@ -125,17 +150,18 @@ class _HomePageState extends State<HomePage> {
         'green', "Cancel Scan", false, ScanMode.BARCODE));
     print(ean);
     http.Response result = await net.sendPost("eanlookup", {"ean": ean});
-    Item temp =
-        Item(json.decode(result.body).name, json.decode(result.body).rating);
+    print(result.body);
+    Map<String, dynamic> data = json.decode(result.body);
+    Item temp = Item(data['name'], data['score']);
     codes.add(temp);
-    print(json.decode(result.body).name);
+    print(data['name']);
     setState(() {});
   }
 }
 
 class Item {
   late String name;
-  late int rating;
+  late double rating;
 
   Item(n, r) {
     name = n;

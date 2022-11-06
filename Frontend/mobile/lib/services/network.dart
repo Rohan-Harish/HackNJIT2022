@@ -13,11 +13,11 @@ class Networking {
   }
 
   Future<http.Response> sendPost(String endpoint, Object body) {
-    print(_ip + ":" + _port + "/" + endpoint);
+    print(_ip + "/" + endpoint);
     Map<String, String> headers = {
       "from": "cleanCartApp",
     };
-    return http.post(Uri.parse("$_ip:$_port"),
+    return http.post(Uri.parse("$_ip/$endpoint"),
         headers: headers, body: jsonEncode(body));
   }
 }

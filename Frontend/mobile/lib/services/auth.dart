@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 class Authentication extends ChangeNotifier {
   String endpoint = ''; //Connect to python backend
   bool _isLoggedIn = false;
-  Networking net = Networking("http://10.208.192.22", "5000");
+  Networking net = Networking("https://ebb2-128-235-250-65.ngrok.io", "5000");
 
   void authenticate(String email, String password) async {
     http.Response response =
