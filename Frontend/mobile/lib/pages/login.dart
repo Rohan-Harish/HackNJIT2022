@@ -1,14 +1,6 @@
+library mobile.globals;
 
-class  extends StatefulWidget {
-  const ({Key? key}) : super(key: key);
+bool isLoggedIn = false;
+String email = '';
+String password = '';
 
-  @override
-  State<> createState() => _State();
-}
-
-class _State extends State<> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}

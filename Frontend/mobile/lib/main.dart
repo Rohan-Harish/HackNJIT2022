@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/components/appbar.dart';
+import 'package:mobile/services/auth.dart';
+import 'package:mobile/globals.dart' as global;
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,10 +31,19 @@ class AuthRouter extends StatefulWidget {
 }
 
 class _AuthRouterState extends State<AuthRouter> {
+
+  final Authentication auth = Authentication();
+
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBarDefault(),
+  Widget build(BuildContext context){
+    return ChangeNotifierProvider<Authentication>(
+      create: (context) => auth,
+
+      child: Consumer<Authentication>(
+        builder: (context, viewModel, child){
+          return (viewModel.getStatus()?TextButton(onPressed: ()=> viewModel.signOut(), child: Text("logout")):TextButton(onPressed: ()=> viewModel.authenticate("test", "login"), child: Text("login")));
+        },
+      )
     );
   }
 }
